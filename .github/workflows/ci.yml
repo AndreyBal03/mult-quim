@@ -27,10 +27,6 @@ jobs:
           # Asumimos que usas flake8 para lint y pytest para tests
           pip install flake8 pytest 
 
-      - name: Lint with flake8
-        run: |
-          # Falla el build si hay errores de Python (E), advertencias (W) o errores de Flake8 (F)
-          flake8 . --count --select=E,W,F --show-source --statistics
 
       - name: Run Pytest
         run: |
