@@ -1,3 +1,7 @@
 import streamlit as st
 
-st.switch_page("pages/home.py")
+##Pages
+home = st.Page("pages/home.py", title="Home")
+
+pg = st.navigation([home])
+pg.run()
