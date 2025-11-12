@@ -13,7 +13,6 @@ class Laboratory:
         if "current_tool_name" not in st.session_state:
             st.session_state["current_tool_name"] = None
         
-        self.current_data = st.session_state["lab_data"]
     
     @property
     def current_tool(self) -> Optional[Tool]:
@@ -32,11 +31,29 @@ class Laboratory:
             if not self.tools:
                 st.caption("No Tools implemented.")
             
-            for tool_name in self.tools.keys():
+            for tool_name in self.tools:
+                
+                button_label = tool_name
+                button_icon = None 
+
+                """ No funciona el icono xd
+                if tool.icon:
+                    if tool.icon.endswith(".png") or tool.icon.endswith(".jpg"):
+                        try:
+                            st.image(tool.icon, width=40) 
+                        except Exception as e:
+                            st.caption(f" No se encontró {tool.icon}, error: {e}")
+                            button_icon = "️x"
+                    else:
+                        # Es un emoji, úsalo *dentro* del botón
+                        button_icon = tool.icon
+                """
+                
                 is_active = (st.session_state.get("current_tool_name") == tool_name)
                 
                 if st.button(
-                    tool_name, 
+                    button_label, 
+                    icon=button_icon, 
                     key=f"tool_btn_{tool_name}", 
                     use_container_width=True,
                     type="primary" if is_active else "secondary" 
@@ -44,24 +61,34 @@ class Laboratory:
                     self.change_tool(tool_name)
                     st.rerun()
 
-            st.title("Laboratory")
-            
-            self.handle_download()
+        st.title("Laboratory")
+        
+        col1, col2 = st.columns(2)
+        with col1:
             self.handle_uploads() 
-            
-            if self.current_tool:
-                st.header(f"Tool: {self.current_tool.name}")
-                self.current_tool.render_tool(st.session_state["lab_data"])
-            
-        st.header("Current Data")
-        st.write(st.session_state.get("lab_data", DataFrame({"Info": ["No data"]})))
+        with col2:
+            _spacer, btn_col = st.columns([0.6, 0.4])
+            with btn_col:
+                self.handle_download()
+        
+        st.header(f"Tool: {self.current_tool.name}")
+        st.divider() 
 
-        st.header("Aqui va todo ejemplo")
-        for _ in range(30):
-            st.write(f"One Piece (relleno).") 
+        col3, col4 = st.columns(2)
+        with col3:
+            st.header("Current Data (Sample)")
+            st.dataframe(st.session_state.get("lab_data", DataFrame({"Info": ["No data"]})).head(), use_container_width=True)
+
+        with col4:
+
+            if self.current_tool:
+                self.current_tool.render_tool(st.session_state["lab_data"])
+        
+        
+
 
     def change_tool(self, tool_name: str):
-        st.session_state["current_tool_name"] = self.tools.get(tool_name)
+        st.session_state["current_tool_name"] = tool_name
     
     def download(self) -> bytes:
         data_to_download = st.session_state.get("lab_data")
@@ -71,7 +98,8 @@ class Laboratory:
     
     def handle_uploads(self) -> None:
         uploaded_file = st.file_uploader("Upload a new DataFrame", 
-                                            type=["csv", "xlsx", "xls"])
+                                         type=["csv", "xlsx", "xls"],
+                                         label_visibility="collapsed")
 
         if uploaded_file is not None:
             try:
@@ -86,9 +114,9 @@ class Laboratory:
 
     def handle_download(self) -> None:
         st.download_button(
-                label="Download CSV",
-                    data=self.download(),
-                    file_name="data.csv",
-                    mime="text/csv",
-                icon=":material/download:",
-            )
+            label="Download CSV",
+            data=self.download(),
+            file_name="data.csv",
+            mime="text/csv",
+            icon=":material/download:",
+        )
