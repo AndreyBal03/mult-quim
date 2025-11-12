@@ -3,8 +3,9 @@ from models.laboratory import Laboratory
 import pandas as pd
 
 
-
 data = st.session_state.get("data", None) 
 lab = Laboratory(data=pd.DataFrame(data))  
+st.set_page_config(layout="wide")
+
 
 lab.render()
