@@ -71,7 +71,10 @@ class Laboratory:
             with btn_col:
                 self.handle_download()
         
-        st.header(f"Tool: {self.current_tool.name}")
+        if self.current_tool:
+            st.header(f"Tool: {self.current_tool.name}")
+        else:
+            st.header("No tool selected")    
         st.divider() 
 
         col3, col4 = st.columns(2)
