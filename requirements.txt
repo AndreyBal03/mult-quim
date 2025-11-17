@@ -2,3 +2,8 @@ streamlit
 streamlit[auth]
 pandas
 numpy
+scikit-learn
+scipy
+matplotlib
+xlrd
+openpyxl
