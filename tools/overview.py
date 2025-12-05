@@ -17,8 +17,14 @@ class Overview(Tool):
     def preview(self):
         pass
 
+    def GuiaUso(self):
+        st.subheader("GUÍA DE USO")
+        st.markdown(r"""""")
+
     def show(self, data: DataFrame | None):
-        #TODO: Hacer esto bien xd
+        # Mostrar Guía de uso
+        self.GuiaUso()
+
         st.subheader("Data Overview")
         
         if data is None or data.empty:
